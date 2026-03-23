@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netflix-rec"
+version = "1.0.0"
+description = "Content-based Netflix movie and series recommender with a Flask web app"
+authors = [{ name = "Collins Akagha" }]
+requires-python = ">=3.10"
+dependencies = ["pandas>=2.0", "numpy>=1.24", "scikit-learn>=1.3", "flask>=3.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+netflix_rec = ["templates/*.html", "static/*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
