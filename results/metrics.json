@@ -1,0 +1,40 @@
+{
+  "titles": 8809,
+  "director_queries": 1000,
+  "titles_with_director_sibling": 2811,
+  "genre_queries": 1000,
+  "random_genre_coherence": 0.0894,
+  "random_director_hit_rate_at_10_approx": 0.0011,
+  "sweep": [
+    {
+      "description_weight": 0.0,
+      "director_hit_rate_at_10": 0.427,
+      "director_mrr": 0.3023,
+      "genre_coherence_top10": 0.5611
+    },
+    {
+      "description_weight": 0.25,
+      "director_hit_rate_at_10": 0.437,
+      "director_mrr": 0.3184,
+      "genre_coherence_top10": 0.5617
+    },
+    {
+      "description_weight": 0.5,
+      "director_hit_rate_at_10": 0.431,
+      "director_mrr": 0.3094,
+      "genre_coherence_top10": 0.5412
+    },
+    {
+      "description_weight": 0.75,
+      "director_hit_rate_at_10": 0.313,
+      "director_mrr": 0.2232,
+      "genre_coherence_top10": 0.3809
+    },
+    {
+      "description_weight": 1.0,
+      "director_hit_rate_at_10": 0.18,
+      "director_mrr": 0.1206,
+      "genre_coherence_top10": 0.2185
+    }
+  ]
+}
