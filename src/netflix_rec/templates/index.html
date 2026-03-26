@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if matched %}Like {{ matched }}? · {% endif %}What to watch next</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <a class="brand" href="{{ url_for('home') }}">WATCH<span>NEXT</span></a>
+    <p class="sub">Content-based recommendations across {{ "{:,}".format(count) }} Netflix movies and series.</p>
+    <form method="get" autocomplete="off">
+      <input name="title" value="{{ title }}" placeholder="A title you liked, e.g. The Irishman" list="titles" aria-label="Title" maxlength="300">
+      <datalist id="titles"></datalist>
+      <span class="or">or</span>
+      <input name="describe" value="{{ describe }}" placeholder="Describe it, e.g. a heist crew robs a bank" aria-label="Description" maxlength="300">
+      <select name="type" aria-label="Type">
+        <option value="" {% if not kind %}selected{% endif %}>Movies and series</option>
+        <option value="Movie" {% if kind == 'Movie' %}selected{% endif %}>Movies only</option>
+        <option value="TV Show" {% if kind == 'TV Show' %}selected{% endif %}>Series only</option>
+      </select>
+      <button type="submit">Recommend</button>
+    </form>
+  </header>
+
+  <main>
+    {% if error %}
+      <p class="notice">{{ error }}
+        {% if suggestions %}Did you mean {% for s in suggestions %}<a href="?title={{ s|urlencode }}">{{ s }}</a>{% if not loop.last %}, {% endif %}{% endfor %}?{% endif %}
+      </p>
+    {% endif %}
+
+    {% if results is not none %}
+      <h2>{% if matched %}Because you watched <em>{{ matched }}</em>{% else %}Matches for “{{ describe }}”{% endif %}</h2>
+      <ol class="grid">
+        {% for r in results %}
+        <li class="card">
+          <div class="top"><span class="badge">{{ 'SERIES' if r.type == 'TV Show' else 'FILM' }}</span>
+            <span class="meta">{{ r.release_year or '' }} · {{ r.rating }} · {{ r.duration }}</span></div>
+          <h3><a href="?title={{ r.title|urlencode }}">{{ r.title }}</a></h3>
+          <p class="desc">{{ r.description }}</p>
+          {% if r.shared %}<p class="why">In common: {{ r.shared[:5]|join(', ') }}</p>{% endif %}
+          <div class="bar"><span style="width: {{ (r.similarity * 200)|round|int if r.similarity < 0.5 else 100 }}%"></span></div>
+        </li>
+        {% else %}
+        <li class="notice">Nothing matches that filter.</li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p class="starters">Try
+        <a href="?title=Narcos">Narcos</a>
+        <a href="?title=The+Irishman">The Irishman</a>
+        <a href="?title=Stranger+Things">Stranger Things</a>
+        <a href="?describe=a+heist+crew+plans+to+rob+a+bank">“a heist crew plans to rob a bank”</a>
+      </p>
+    {% endif %}
+  </main>
+  <footer>Built by Collins Akagha · <a href="https://github.com/Collinsthe4th/netflix-recommender">Source on GitHub</a> · <a href="{{ url_for('api_recommend') }}?title=Narcos&k=5">JSON API</a></footer>
+  <script>
+    const box = document.querySelector('input[name="title"]'), list = document.getElementById('titles');
+    let t; box.addEventListener('input', () => { clearTimeout(t); const q = box.value.trim(); if (q.length < 2) return;
+      t = setTimeout(() => fetch('/api/search?q=' + encodeURIComponent(q)).then(r => r.json())
+        .then(d => list.replaceChildren(...d.titles.map(v => Object.assign(document.createElement('option'), {value: v})))).catch(() => {}), 150); });
+  </script>
+</body>
+</html>
