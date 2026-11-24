@@ -1,0 +1,12 @@
+# One-click deploy on Render (https://render.com).
+services:
+  - type: web
+    name: netflix-recommender
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn "netflix_rec.app:create_app()" --chdir src --bind 0.0.0.0:$PORT --workers 2
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
