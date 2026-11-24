@@ -13,7 +13,8 @@ APP = str(Path(__file__).resolve().parents[1] / "streamlit_app.py")
 def test_app_runs():
     at = AppTest.from_file(APP, default_timeout=120).run()
     assert not at.exception
-    assert at.title[0].value.startswith("🍿 WatchNext")
+    assert at.title[0].value == "Netflix Movie and Series Recommender"
+    assert at.image  # header photo is shown
     at.selectbox[1].set_value("Series only").run()
     assert not at.exception
     at.radio[0].set_value("A description").run()

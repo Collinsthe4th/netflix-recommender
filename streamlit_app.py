@@ -18,7 +18,10 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from netflix_rec import NetflixRecommender  # noqa: E402
 
-st.set_page_config(page_title="WatchNext", page_icon="🍿", layout="wide")
+st.set_page_config(page_title="Netflix Movie and Series Recommender", layout="wide")
+
+HEADER = "https://images.unsplash.com/photo-1627873649417-c67f701f1949?auto=format&fit=crop&w=1600&h=340&q=80"
+st.image(HEADER, use_container_width=True)
 
 
 @st.cache_resource
@@ -29,8 +32,8 @@ def get_recommender() -> NetflixRecommender:
 rec = get_recommender()
 titles = sorted(rec.df["title"].unique().tolist(), key=str.lower)
 
-st.title("🍿 WatchNext: what to watch on Netflix next")
-st.caption(f"Content-based recommendations across {len(rec.df):,} movies and series. Similarity = 25% plot description + 75% tags (genres, top cast, directors, countries).")
+st.title("Netflix Movie and Series Recommender")
+st.caption(f"I built this recommender from {len(rec.df):,} Netflix movies and series. The score is 25% plot description and 75% tags (genres, top cast, directors and countries), and each card shows what the two titles have in common.")
 
 mode = st.radio("Search by", ["A title I watched", "A description"], horizontal=True)
 c1, c2, c3 = st.columns([3, 1.2, 1])
@@ -72,4 +75,4 @@ with st.expander("How the model was evaluated"):
     st.dataframe(pd.DataFrame(m["sweep"]), hide_index=True, use_container_width=True)
     st.image(str(ROOT / "results" / "figures" / "weight_sweep.png"))
 
-st.markdown("[Source code and README](https://github.com/Collinsthe4th/netflix-recommender)")
+st.markdown("[Source code and README](https://github.com/Collinsthe4th/netflix-recommender) · Header photo from Unsplash.")
